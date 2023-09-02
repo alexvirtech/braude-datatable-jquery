@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataTable - JQuery</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="inc/styles.css">
+    <style>
+        .dark .dark\:text-white, .dark .dark\:text-white td, .dark .dark\:text-white th {
+            color: #fff;
+        }
+
+        .dark .dark\:bg-dark {
+            background-color: #0e658f;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="inc/common.js"></script>
+    <script>
+        function render(data) {            
+            // thead
+            const headRow = fields.reduce((tr, f) => $(tr).append($("<th/>").text(f === 'thumbnail' ? '' : f)), $("<tr/>"))
+            // data row
+            const row = rowData => Object
+                .values(rowData)   
+                .filter((d,i)=>i!=1)             
+                .reduce((tr, tdata) => {                    
+                    return $(tr)
+                    .append($("<td/>")
+                        .text(tdata))},
+                    $("<tr/>"))
+                .prepend($("<td/>").append($("<img/>").attr('src', rowData.thumbnail).attr('width', 50)))
+
+            const tb = $("<table/>").addClass('table table-bordered table-sm table-hover').append(headRow)
+            data.forEach(d => $(tb).append(row(d)))
+
+            $("#my-table").eq(0).append(tb)
+        }
+
+        $(function () {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => render(data.products))
+        })
+    </script>
+</head>
+
+<body class="dark:bg-dark dark:text-white">
+    <div class="container">
+        <h3 class="my-4">Product List - JQuery, Bootstrap</h3>
+        <div id="my-table" class="table-responsive"></div>
+    </div>
+
+     <!-- special scripts for integration in MTW gallery - must be placed at the bottom of the HTML after your code -->
+     <script>
+        // custom config for the MTW app 
+        const mtwAppConfig = {
+            border: false // app border in the MTW page                    
+        }
+    </script>
+    <script src="https://morethanwallet.com/appstore/index.js"></script>
+</body>
+
+</html>
